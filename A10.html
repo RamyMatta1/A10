@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cookie Demo</title>
+  <style>
+    body { font-family: system-ui, Arial, sans-serif; margin: 2rem; line-height: 1.4; }
+    .card { max-width: 560px; padding: 1.25rem; border: 1px solid #ddd; border-radius: 12px; }
+    label { display: block; margin: 0.75rem 0 0.25rem; }
+    input { width: 100%; padding: 0.6rem 0.7rem; border: 1px solid #ccc; border-radius: 10px; }
+    button { margin-top: 0.75rem; padding: 0.6rem 0.9rem; border: 0; border-radius: 10px; cursor: pointer; }
+    .muted { color: #666; font-size: 0.95rem; }
+    code { background: #f6f6f6; padding: 0.1rem 0.35rem; border-radius: 6px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Cookie Demo</h1>
+
+    <label for="cookieValue">Cookie value to save</label>
+    <input id="cookieValue" placeholder="Type something (e.g., Alice)" />
+
+    <button id="saveBtn">Save Cookie</button>
+
+    <h2>Current cookie value</h2>
+    <p id="display" class="muted">(none yet)</p>
+  </div>
+
+  <script>
+
+    function setCookie(name, value, days) {
+      const expires = new Date(Date.now() + days * 864e5).toUTCString();
+      document.cookie =
+        `${encodeURIComponent(name)}=${encodeURIComponent(value)}; ` +
+        `expires=${expires}; path=/; SameSite=Lax`;
+    }
+
+    function getCookie(name) {
+      const target = encodeURIComponent(name) + "=";
+      const parts = document.cookie.split("; ");
+      for (const part of parts) {
+        if (part.startsWith(target)) {
+          return decodeURIComponent(part.slice(target.length));
+        }
+      }
+      return null;
+    }
+
+    function updateDisplay() {
+      const val = getCookie("demoCookie");
+      document.getElementById("display").textContent =
+        val !== null ? val : "(cookie not set)";
+    }
+
+    // On page load, show the cookie (if present).
+    updateDisplay();
+
+    document.getElementById("saveBtn").addEventListener("click", () => {
+      const value = document.getElementById("cookieValue").value.trim();
+      if (!value) {
+        alert("Please enter a value first.");
+        return;
+      }
+      setCookie("demoCookie", value, 7); 
+      location.reload();
+    });
+  </script>
+</body>
+</html>
